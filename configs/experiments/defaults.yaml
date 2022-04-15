@@ -1,11 +1,29 @@
 dataset_config:
   hateful_memes:
+    use_images: false
+    use_features: true
+    # Disable this in your config if you do not need features info
+    # and are running out of memory
+    return_features_info: true
     processors:
       text_processor:
-        type: fasttext_sentence_vector
+        type: bert_tokenizer
         params:
-          max_length: null
-          model_file: wiki.en.bin
+          tokenizer_config:
+            type: bert-base-uncased
+            params:
+              do_lower_case: true
+          mask_probability: 0
+          max_seq_length: 128
+
+#dataset_config:
+#  hateful_memes:
+#    processors:
+#      text_processor:
+#        type: fasttext_sentence_vector
+#        params:
+#          max_length: null
+#          model_file: wiki.en.bin
 
 optimizer:
   type: adam_w
@@ -26,10 +44,14 @@ evaluation:
   - roc_auc
 
 training:
-  batch_size: 64
+  batch_size: 1
   lr_scheduler: true
   max_updates: 22000
   find_unused_parameters: true
   early_stop:
     criteria: hateful_memes/roc_auc
     minimize: false
+
+checkpoint:
+  pretrained_state_mapping:
+    model.bert: model.bert

@@ -1,29 +1,53 @@
 model_config:
   concat_vl:
-    num_classes: 2
-    dropout: 0.1
-    image_encoder:
-      type: resnet152
-      params:
-        pretrained: true
-        pool_type: avg
-        num_output_features: 1
-    text_encoder:
-      params:
-        module: linear
-        in_dim: 300
-        out_dim: 300
-    fusion:
-      params:
-        # Visual Dim (2048) + Text Dim (300)
-        # Follow the API of nn.Linear
-        in_features: 2348
-        out_features: 512
+    bert_model_name: bert-base-uncased
+    training_head_type: classification
+    visual_embedding_dim: 2048
+    special_visual_initialize: true
+    embedding_strategy: plain
+    bypass_transformer: false
+    output_attentions: false
+    output_hidden_states: false
+    random_initialize: false
+    freeze_base: false
+    finetune_lr_multiplier: 1
+    # Default points to BERT pooler strategy which is to take
+    # representation of CLS token after passing it through a dense layer
+    pooler_strategy: default
+    zerobias: false     # Initialize last layer to predict closer to 0 on init for sigmoid outputs
+    num_labels: 2
     losses:
-    - cross_entropy
-    classifier:
-      type: mlp
-      params:
-        in_dim: 512
-        out_dim: ${model_config.concat_vl.num_classes}
-        num_layers: 0
+      - cross_entropy
+
+
+
+
+#model_config:
+#  concat_vl:
+#    num_classes: 2
+#    dropout: 0.1
+#    image_encoder:
+#      type: resnet152
+#      params:
+#        pretrained: true
+#        pool_type: avg
+#        num_output_features: 1
+#    text_encoder:
+#      params:
+#        module: linear
+#        in_dim: 300
+#        out_dim: 300
+#    fusion:
+#      params:
+#        # Visual Dim (2048) + Text Dim (300)
+#        # Follow the API of nn.Linear
+#        in_features: 2348
+#        out_features: 512
+#    losses:
+#    - cross_entropy
+#    classifier:
+#      type: mlp
+#      params:
+#        in_dim: 512
+#        out_dim: ${model_config.concat_vl.num_classes}
+#        num_layers: 0
