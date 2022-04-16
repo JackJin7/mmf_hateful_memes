@@ -1,13 +1,13 @@
 model_config:
-  concat_vl:
+  my_visual_bert:
     bert_model_name: bert-base-uncased
     training_head_type: classification
     visual_embedding_dim: 2048
     special_visual_initialize: true
     embedding_strategy: plain
     bypass_transformer: false
-    output_attentions: false
-    output_hidden_states: false
+    output_attentions: true
+    output_hidden_states: true
     random_initialize: false
     freeze_base: false
     finetune_lr_multiplier: 1
