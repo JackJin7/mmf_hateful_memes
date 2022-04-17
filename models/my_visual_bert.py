@@ -138,7 +138,7 @@ class VisualBERTBase(BertPreTrainedModel):
 
             if not torch.jit.is_scripting():
                 if self.output_attentions:
-                    attn_data_list = encoded_layers[1:]
+                    attn_data_list = encoded_layers[2]
             else:
                 assert (
                     not self.output_attentions
