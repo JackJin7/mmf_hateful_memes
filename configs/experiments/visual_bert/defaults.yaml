@@ -44,6 +44,7 @@ evaluation:
   - roc_auc
 
 training:
+  checkpoint_interval: 5000
   batch_size: 32
   lr_scheduler: true
   max_updates: 44000
@@ -53,7 +54,5 @@ training:
     minimize: false
 
 checkpoint:
-  resume_pretrained: true
-  resume_zoo: visual_bert.pretrained.coco
   pretrained_state_mapping:
     model.bert: model.bert
