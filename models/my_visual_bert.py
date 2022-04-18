@@ -138,7 +138,7 @@ class VisualBERTBase(BertPreTrainedModel):
 
             if not torch.jit.is_scripting():
                 if self.output_attentions:
-                    attn_data_list = encoded_layers[2]
+                    attn_data_list = encoded_layers[1:]
             else:
                 assert (
                     not self.output_attentions
@@ -365,12 +365,19 @@ class VisualBERTForClassification(nn.Module):
 
         output_dict: Dict[str, Tensor] = {}
         if not torch.jit.is_scripting():
-            if self.output_attentions:
-                output_dict["attention_weights"] = attention_weights
-
-            if self.output_hidden_states:
+            if self.output_attentions and self.output_hidden_states:
+                output_dict["all_hidden_states"] = attention_weights[0]
+                output_dict["attention_weights"] = attention_weights[1]
                 output_dict["sequence_output"] = sequence_output
                 output_dict["pooled_output"] = pooled_output
+
+            elif self.output_attentions:
+                output_dict["attention_weights"] = attention_weights[0]
+
+            elif self.output_hidden_states:
+                output_dict["sequence_output"] = sequence_output
+                output_dict["pooled_output"] = pooled_output
+                output_dict["all_hidden_states"] = attention_weights[0]
         else:
             assert not (
                 self.output_attentions or self.output_hidden_states
