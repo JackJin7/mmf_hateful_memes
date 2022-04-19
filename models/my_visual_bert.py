@@ -6,6 +6,7 @@
 import os
 from copy import deepcopy
 from typing import Dict, List, Optional, Tuple
+import pickle
 
 import torch
 from mmf.common.registry import registry
@@ -596,6 +597,17 @@ class VisualBERT(BaseModel):
                 )
             else:
                 raise RuntimeError("Pretraining head can't be used in script mode.")
+
+        with open(f'{self.config.model}_visualization_data.pkl', 'ab') as f:
+            data = {
+                'input': {
+                    'text': sample_list['text'],
+                    'image_info_0': sample_list['image_info_0'],
+                    'targets': sample_list['targets']
+                },
+                'output': output_dict
+            }
+            pickle.dump(data, f)
 
         return output_dict
 
