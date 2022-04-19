@@ -45,7 +45,7 @@ evaluation:
 
 training:
   checkpoint_interval: 5000
-  batch_size: 1
+  batch_size: 32
   lr_scheduler: true
   max_updates: 44000
   find_unused_parameters: true

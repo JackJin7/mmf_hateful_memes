@@ -605,7 +605,10 @@ class VisualBERT(BaseModel):
                     'image_info_0': sample_list['image_info_0'],
                     'targets': sample_list['targets']
                 },
-                'output': output_dict
+                'output': {
+                    'pooled_output': output_dict['pooled_output'],
+                    # 'attention_weights': output_dict['attention_weights']
+                }
             }
             pickle.dump(data, f)
 
