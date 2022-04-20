@@ -4,6 +4,7 @@ import math
 import os
 from copy import deepcopy
 from typing import Dict, List, Optional, Tuple
+import pickle
 
 import numpy as np
 import torch
@@ -1283,7 +1284,7 @@ class ViLBERTForClassification(nn.Module):
         image_label: Optional[Tensor] = None,
         image_target: Optional[Tensor] = None,
         next_sentence_label: Optional[Tensor] = None,
-        output_all_attention_masks: bool = False,
+        output_all_attention_masks: bool = True,
     ) -> Dict[str, Tensor]:
 
         (
@@ -1462,5 +1463,21 @@ class ViLBERT(BaseModel):
             # if params["is_random_next"] is not None:
             #     output_dict["losses"][loss_key + "/next_sentence_loss"]
             #       = output_dict.pop("next_sentence_loss")
+
+        with open(f'{self.config.model}_cc_attn_visualization_data.pkl', 'ab') as f:
+            image_info_0 = sample_list['image_info_0']
+            image_info_0.pop('cls_prob', None)
+            data = {
+                'input': {
+                    'text': sample_list['text'],
+                    'image_info_0': image_info_0,
+                    'targets': sample_list['targets']
+                },
+                'output': {
+                    'attention_weights': output_dict['attention_weights'][2][-1][0],
+                    'pred': torch.max(output_dict['scores'], dim=1).indices
+                }
+            }
+            pickle.dump(data, f)
 
         return output_dict

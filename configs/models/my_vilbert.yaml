@@ -54,7 +54,7 @@ model_config:
     task_specific_tokens: false
     fixed_v_layer: 0
     fixed_t_layer: 0
-    visualization: false
+    visualization: true
     visual_target: 0
     objective: 0
     num_negative: 128
