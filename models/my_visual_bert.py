@@ -598,16 +598,18 @@ class VisualBERT(BaseModel):
             else:
                 raise RuntimeError("Pretraining head can't be used in script mode.")
 
-        with open(f'{self.config.model}_visualization_data.pkl', 'ab') as f:
+        with open(f'{self.config.model}_attn_visualization_data.pkl', 'ab') as f:
+            image_info_0 = sample_list['image_info_0']
+            image_info_0.pop('cls_prob', None)
             data = {
                 'input': {
                     'text': sample_list['text'],
-                    'image_info_0': sample_list['image_info_0'],
+                    'image_info_0': image_info_0,
                     'targets': sample_list['targets']
                 },
                 'output': {
-                    'pooled_output': output_dict['pooled_output'],
-                    'attention_weights': output_dict['attention_weights'][-1]
+                    'attention_weights': output_dict['attention_weights'][-1],
+                    'pred': torch.max(output_dict['scores'], dim=1).indices
                 }
             }
             pickle.dump(data, f)
